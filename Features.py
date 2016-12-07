@@ -10,57 +10,162 @@ import Web_Scraper as ws
 import pandas as pd
 import hdf5_getters
 import numpy as np
-f='TRAXLZU12903D05F94.h5'
-f1='TRAAADZ128F9348C2E.h5'
-h5 = hdf5_getters.open_h5_file_read(f)
-h51=hdf5_getters.open_h5_file_read(f1)
+import os
+import sys
+import glob
+import time
 '''
 title.append(hdf5_getters.get_title(h5))
 
 df=pd.DataFrame(title,columns=['Title'])
 print hdf5_getters.get_num_songs(h5)
 '''
-
+'''
 #Creating lists to append columns in the database:
-
-title=[]
-familiarity=[]#get_artist_familiarity()
-artist_hotness=[]#get_artist_hotttnesss
 print len(hdf5_getters.get_segments_start(h5))
-name=[]#get_artist_name
 print len(hdf5_getters.get_segments_start(h51))
 print np.mean(hdf5_getters.get_bars_confidence((h51)))
 #print (hdf5_getters.get_segments_loudness_max(h51))
 print np.mean(hdf5_getters.get_tatums_confidence(h5))
-name=[]#get_artist_name`
-title=[]#get_title()
-familiarity=[]#get_artist_familiarity()
-artist_hotness=[]#get_artist_hotttnesss
-song_hotness=[]# get_song_hotttnesss
-danceability=[]#get_danceability
-energy=[]#get_energy
-loudness=[]#get_loudness
-tempo=[]#get_tempo
-mode_confidence=[]#get_mode_confidence()
-time_sig_confidence=[]#get_time_signature_confidence()
-no_segments=[]#len(get_segments_start())
-avg_segment_confidence=[]#np.mean(hdf5_getters.get_segments_confidence(h5))
-avg_segment_pitches=[]#np.mean(hdf5_getters.get_segments_pitches(h51))
-no_sections=[]#len(hdf5_getters.get_sections_start())
-avg_sections_confidence=[]#np.mean(hdf5_getters.get_sections_confidence(h51))
-no_beats_start=[]#len(hdf5_getters.get_beats_start(h51))
-avg_beats_confidence=[]#np.mean(hdf5_getters.get_beats_confidence(h51))
-no_bars=[]#len(hdf5_getters.get_bars_start(h5))
-avg_bar_confidence=[]#np.mean(hdf5_getters.get_bars_confidence((h51))
-no_tatums_start=[]#len(hdf5_getters.get_tatums_start(h5))
-avg_tatums_start=[]#np.mean(get_tatums_confidence())
-billboard_presence=[]#returned value from web scraper
-#MAY NOT BE NECESSARY
-end_of_fade_in=[]# get_end_of_fade_in
-key_confidence=[]#get_key_confidence
-mode_confidence=[]#get_mode_confidence
-time_signature_confidence=[]#get_time_signature_confidence
+'''
+
 '''
 #IS NOT NECESSARY:
 get_start_of_fade_out ONLY INDICATES LENGTH OF THE SONG. dOES NOTMATTER
 '''
+
+
+
+
+
+
+def get_all_files(basedir,ext='.h5') :
+    """
+    From a root directory, go through all subdirectories
+    and find all files with the given extension.
+    Return all absolute paths in a list.
+    """
+    c=0
+    title=[]#get_title(h5)
+    name=[]#get_artist_name`
+    familiarity=[]#get_artist_familiarity()
+    artist_hotness=[]#get_artist_hotttnesss
+    song_hotness=[]# get_song_hotttnesss
+    danceability=[]#get_danceability
+    energy=[]#get_energy
+    loudness=[]#get_loudness
+    tempo=[]#get_tempo
+    mode_confidence=[]#get_mode_confidence()
+    time_sig_confidence=[]#get_time_signature_confidence()
+    no_segments=[]#len(get_segments_start())
+    avg_segment_confidence=[]#np.mean(hdf5_getters.get_segments_confidence(h5))
+    avg_segment_pitches=[]#np.mean(hdf5_getters.get_segments_pitches(h51))
+    no_sections=[]#len(hdf5_getters.get_sections_start())
+    avg_sections_confidence=[]#np.mean(hdf5_getters.get_sections_confidence(h51))
+    no_beats_start=[]#len(hdf5_getters.get_beats_start(h51))
+    avg_beats_confidence=[]#np.mean(hdf5_getters.get_beats_confidence(h51))
+    no_bars=[]#len(hdf5_getters.get_bars_start(h5))
+    avg_bar_confidence=[]#np.mean(hdf5_getters.get_bars_confidence((h51))
+    no_tatums_start=[]#len(hdf5_getters.get_tatums_start(h5))
+    avg_tatums_start=[]#np.mean(get_tatums_confidence())
+    billboard_presence=[]#returned value from web scraper
+    #MAY NOT BE NECESSARY
+    end_of_fade_in=[]# get_end_of_fade_in
+    key_confidence=[]#get_key_confidence
+    mode_confidence=[]#get_mode_confidence
+    time_signature_confidence=[]#get_time_signature_confidence
+    x=0
+    c=0
+    for root, dirs, files in os.walk(basedir):
+        files = glob.glob(os.path.join(root,'*'+ext))
+        for f in files :
+            if(c<=4):
+                h5 = hdf5_getters.open_h5_file_read(f)
+                songnme=hdf5_getters.get_title(h5)
+                artst=hdf5_getters.get_artist_name(h5)
+                try:
+                    x,_,_=ws.billboard(songnme,artst)
+                except:
+                    print "OKAYAYAYAYA"
+                    x=0;
+                title.append(songnme)
+                name.append(artst)
+                familiarity.append(hdf5_getters.get_artist_familiarity(h5))
+                artist_hotness.append(hdf5_getters.get_artist_hotttnesss(h5))
+                song_hotness.append(hdf5_getters. get_song_hotttnesss(h5))
+                danceability.append(hdf5_getters.get_danceability(h5))
+                
+                energy.append(hdf5_getters.get_energy(h5))
+                loudness.append(hdf5_getters.get_loudness(h5))
+                tempo.append(hdf5_getters.get_tempo(h5))
+                mode_confidence.append(hdf5_getters.get_mode_confidence(h5))
+                time_sig_confidence.append(hdf5_getters.get_time_signature_confidence(h5))
+                
+                no_segments.append(len(hdf5_getters.get_segments_start(h5)))
+                avg_segment_confidence.append(np.mean(hdf5_getters.get_segments_confidence(h5)))
+                avg_segment_pitches.append(np.mean(hdf5_getters.get_segments_pitches(h5)))
+                no_sections.append(len(hdf5_getters.get_sections_start(h5)))
+                avg_sections_confidence.append(np.mean(hdf5_getters.get_sections_confidence(h5)))
+                no_beats_start.append(len(hdf5_getters.get_beats_start(h5)))
+                avg_beats_confidence.append(np.mean(hdf5_getters.get_beats_confidence(h5)))
+                no_bars.append(len(hdf5_getters.get_bars_start(h5)))
+                avg_bar_confidence.append(np.mean(hdf5_getters.get_bars_confidence(h5)))
+                no_tatums_start.append(len(hdf5_getters.get_tatums_start(h5)))
+                avg_tatums_start.append(np.mean(hdf5_getters.get_tatums_confidence(h5)))
+                billboard_presence.append(x)
+                h5.close()
+                print c
+                if(x>0):
+                    c+=1;
+            else:
+                break;
+                
+                
+        
+            
+
+    df=pd.DataFrame(title,columns=['Title'])
+    df['Artist_Name']=name
+    df['Familiarity']=familiarity
+    df['Hotness']=artist_hotness
+    df['Song_hotness']=song_hotness
+    df['Danceability']=danceability
+    df['energy']=energy
+    df['loudness']=loudness
+    df['tempo']=tempo
+    df['mode_confidence']=mode_confidence
+    df['time_sig_confidence']=time_sig_confidence
+    df['no_segments']=no_segments
+    df['avg_segment_confidence']=avg_segment_confidence
+    df['avg_segment_pitches']=avg_segment_pitches
+    df['no_sections']=no_sections
+    df['avg_sections_confidence']=avg_sections_confidence
+    df['no_beats_start']=no_beats_start
+    df['avg_beats_confidence']=avg_beats_confidence
+    df['no_bars']=no_bars
+    df['avg_bar_confidence']=avg_bar_confidence
+    df['no_tatums_start']=no_tatums_start
+    df['avg_tatums_start']=avg_tatums_start
+    print df.head()
+    print len(title)
+    target=pd.DataFrame(billboard_presence,columns=['billboard_presence'])
+    
+    from sklearn.model_selection import train_test_split
+    from sklearn.metrics import f1_score
+    df=df.drop('Title',axis=1);
+    df=df.drop('Artist_Name',axis=1);
+    df=df.drop('Song_hotness',axis=1);
+    print df
+    print target
+    X_train, X_test, y_train, y_test = train_test_split(df,target, test_size=0.25, random_state=42)
+    from sklearn.naive_bayes import GaussianNB
+    clf = GaussianNB()
+    clf.fit(X_train, y_train)
+    y_pred=clf.predict(X_test)
+    print "f1 score =",f1_score(y_test, y_pred, pos_label='yes')
+    
+if __name__=='__main__':
+    
+    get_all_files('E:\Udacity\Machine Learning\MillionSongSubset\data')
+
+    
