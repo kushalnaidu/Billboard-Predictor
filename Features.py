@@ -74,56 +74,58 @@ def get_all_files(basedir,ext='.h5') :
     key_confidence=[]#get_key_confidence
     mode_confidence=[]#get_mode_confidence
     time_signature_confidence=[]#get_time_signature_confidence
-    x=0
-    c=0
+    target=pd.read_csv('Billboard.csv')
+    j=0
     for root, dirs, files in os.walk(basedir):
         files = glob.glob(os.path.join(root,'*'+ext))
         for f in files :
-            if(c<=4):
-                h5 = hdf5_getters.open_h5_file_read(f)
-                songnme=hdf5_getters.get_title(h5)
-                artst=hdf5_getters.get_artist_name(h5)
-                try:
-                    x,_,_=ws.billboard(songnme,artst)
-                except:
-                    print "OKAYAYAYAYA"
-                    x=0;
-                title.append(songnme)
-                name.append(artst)
-                familiarity.append(hdf5_getters.get_artist_familiarity(h5))
-                artist_hotness.append(hdf5_getters.get_artist_hotttnesss(h5))
-                song_hotness.append(hdf5_getters. get_song_hotttnesss(h5))
-                danceability.append(hdf5_getters.get_danceability(h5))
-                
-                energy.append(hdf5_getters.get_energy(h5))
-                loudness.append(hdf5_getters.get_loudness(h5))
-                tempo.append(hdf5_getters.get_tempo(h5))
-                mode_confidence.append(hdf5_getters.get_mode_confidence(h5))
-                time_sig_confidence.append(hdf5_getters.get_time_signature_confidence(h5))
-                
-                no_segments.append(len(hdf5_getters.get_segments_start(h5)))
-                avg_segment_confidence.append(np.mean(hdf5_getters.get_segments_confidence(h5)))
-                avg_segment_pitches.append(np.mean(hdf5_getters.get_segments_pitches(h5)))
-                no_sections.append(len(hdf5_getters.get_sections_start(h5)))
-                avg_sections_confidence.append(np.mean(hdf5_getters.get_sections_confidence(h5)))
-                no_beats_start.append(len(hdf5_getters.get_beats_start(h5)))
-                avg_beats_confidence.append(np.mean(hdf5_getters.get_beats_confidence(h5)))
-                no_bars.append(len(hdf5_getters.get_bars_start(h5)))
-                avg_bar_confidence.append(np.mean(hdf5_getters.get_bars_confidence(h5)))
-                no_tatums_start.append(len(hdf5_getters.get_tatums_start(h5)))
-                avg_tatums_start.append(np.mean(hdf5_getters.get_tatums_confidence(h5)))
-                billboard_presence.append(x)
-                h5.close()
-                print c
-                if(x>0):
-                    c+=1;
-            else:
-                break;
-                
-                
-        
-            
-
+            h5 = hdf5_getters.open_h5_file_read(f)
+            songnme=hdf5_getters.get_title(h5)
+            artst=hdf5_getters.get_artist_name(h5)
+            for i in range(len(target)):
+                if(target.Title[i]==songnme and target.Name[i]==artst):
+                    #if(not(pd.isnull(target.loc[i]).all())):
+                        
+                    billboard_presence.append(target.Presence[i])
+                    
+                    title.append(songnme)
+                    name.append(artst)
+                    familiarity.append(hdf5_getters.get_artist_familiarity(h5))
+                    artist_hotness.append(hdf5_getters.get_artist_hotttnesss(h5))
+                    song_hotness.append(hdf5_getters. get_song_hotttnesss(h5))
+                    danceability.append(hdf5_getters.get_danceability(h5))
+                    
+                    energy.append(hdf5_getters.get_energy(h5))
+                    loudness.append(hdf5_getters.get_loudness(h5))
+                    tempo.append(hdf5_getters.get_tempo(h5))
+                    mode_confidence.append(hdf5_getters.get_mode_confidence(h5))
+                    time_sig_confidence.append(hdf5_getters.get_time_signature_confidence(h5))
+                    
+                    no_segments.append(len(hdf5_getters.get_segments_start(h5)))
+                    avg_segment_confidence.append(np.mean(hdf5_getters.get_segments_confidence(h5)))
+                    avg_segment_pitches.append(np.mean(hdf5_getters.get_segments_pitches(h5)))
+                    no_sections.append(len(hdf5_getters.get_sections_start(h5)))
+                    avg_sections_confidence.append(np.mean(hdf5_getters.get_sections_confidence(h5)))
+                    no_beats_start.append(len(hdf5_getters.get_beats_start(h5)))
+                    avg_beats_confidence.append(np.mean(hdf5_getters.get_beats_confidence(h5)))
+                    no_bars.append(len(hdf5_getters.get_bars_start(h5)))
+                    avg_bar_confidence.append(np.mean(hdf5_getters.get_bars_confidence(h5)))
+                    no_tatums_start.append(len(hdf5_getters.get_tatums_start(h5)))
+                    
+                    avg_tatums_start.append(np.mean(hdf5_getters.get_tatums_confidence(h5)))
+                    j+=1
+                    print j
+                    break;
+                    '''
+                    if(j>440):
+                        break;
+                    break;
+                if(j>440):
+                    break;
+            if(j>440):
+                break;'''
+            h5.close()
+    print "Created Arrays"             
     df=pd.DataFrame(title,columns=['Title'])
     df['Artist_Name']=name
     df['Familiarity']=familiarity
@@ -146,24 +148,35 @@ def get_all_files(basedir,ext='.h5') :
     df['avg_bar_confidence']=avg_bar_confidence
     df['no_tatums_start']=no_tatums_start
     df['avg_tatums_start']=avg_tatums_start
+    df['Presence']=billboard_presence
     print df.head()
-    print len(title)
-    target=pd.DataFrame(billboard_presence,columns=['billboard_presence'])
-    
+    print billboard_presence
+    df.to_csv("data.csv")
     from sklearn.model_selection import train_test_split
     from sklearn.metrics import f1_score
     df=df.drop('Title',axis=1);
     df=df.drop('Artist_Name',axis=1);
+    print df['Song_hotness'].isnull().sum()
     df=df.drop('Song_hotness',axis=1);
-    print df
-    print target
-    X_train, X_test, y_train, y_test = train_test_split(df,target, test_size=0.25, random_state=42)
+    
+    for i in range(len(df)):
+        if(pd.isnull(df.loc[i]).any()):
+            df=df.drop(i)
+            billboard_presence.pop(i)
+    X_train, X_test, y_train, y_test = train_test_split(df,billboard_presence, test_size=0.25, random_state=42)
     from sklearn.naive_bayes import GaussianNB
     clf = GaussianNB()
+    
     clf.fit(X_train, y_train)
     y_pred=clf.predict(X_test)
-    print "f1 score =",f1_score(y_test, y_pred, pos_label='yes')
-    
+    print y_pred
+    print y_test
+    print "f1 score =",f1_score(y_test, y_pred)
+    from sklearn.ensemble import AdaBoostClassifier
+    clf1=AdaBoostClassifier(base_estimator=clf)
+    clf1.fit(X_train, y_train)
+    y_pred=clf1.predict(X_test)
+    print "f1 score =",f1_score(y_test, y_pred)
 if __name__=='__main__':
     
     get_all_files('E:\Udacity\Machine Learning\MillionSongSubset\data')

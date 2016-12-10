@@ -14,6 +14,7 @@ def billboard(songname,artist):#put parameter as song name, artist
     songlink=re.sub('[ ]+','%20', songlink)
     print "came here 1"
     page=urllib2.urlopen('http://www.umdmusic.com/default.asp?Lang=English&Chart=D&ChDay=&ChMonth=&ChYear=&ChBand=&ChSong='+songlink)
+    print "came here 2"    
     soup=BeautifulSoup(page);
     all_tables=soup.find_all('table')
     req_table=None
@@ -23,15 +24,14 @@ def billboard(songname,artist):#put parameter as song name, artist
     print "came here 2"
     p=0
     #print req_table
-    name=re.findall(r'<td style="fo      xcnt-size:10pt;font-family:Arial;padding-left:0.1in"><b>'+songname+'(.*?)</td>',str(req_table))
+    name=re.findall(r'<td style="font-size:10pt;font-family:Arial;padding-left:0.1in"><b>'+songname+'(.*?)</td>',str(req_table))
     ranks=re.findall(r'<td align="center" style="font-size:10pt;font-family:Arial">(\d\d|\d)',str(req_table))
-    print "came here 3"    
     chart_true=0
     for x in name:
         ans=x.strip(' ');
         
         ans=ans.strip('</b><br/>');
-        if(ans!=artist.upper()):
+        if(ans not in artist.upper()):
             p+=1;
         else:
             chart_true=1
@@ -42,8 +42,9 @@ def billboard(songname,artist):#put parameter as song name, artist
     else:
         peak_position=int(ranks[p+1])
         weeks_on_billboard=int(ranks[p+2])
+        print "FOUND!!!!!!!!"
         print peak_position,weeks_on_billboard
         return chart_true,peak_position,weeks_on_billboard;
 
 if __name__ == "__main__":
-    print billboard('Street Sh***','TAYLOR SWIFT');
+    print billboard('Out Of The Woods','TAYLOR SWIFT');
