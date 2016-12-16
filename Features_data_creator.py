@@ -155,7 +155,7 @@ def get_all_files(basedir,ext='.h5') :
         df.to_csv("data.csv")
     else:
         df=pd.read_csv('data.csv',index_col=0)
-    print df.head()
+    return df;
     import Rating_Predictor
     Rating_Predictor.predictor(df)
 if __name__=='__main__':

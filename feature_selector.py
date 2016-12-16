@@ -6,22 +6,27 @@ Created on Fri Dec 16 09:42:20 2016
 """
 import time
 import pandas as pd
+import Rating_Predictor
 def feature_selector(df):
     x=0
     features={}
+    
     for i in df.keys():
         features[x]=i;
         x+=1;
     i=0;
-    
+    features.pop(x-1)
     temp_df=pd.DataFrame();
-    print len(df.keys())
+    #print len(df.keys())
     while(i<pow(len(df.keys()),len(df.keys()))):
     #for i in range(pow(len(df.keys()),len(df.keys()))):
         x=time.time()
         
         temp_df=pd.DataFrame();
-        temp_df[features[i%len(df.keys())]]=df[features[i%len(df.keys())]]
+        for j in range(len(features)):
+            temp_df[features[(i/(len(features)**j)%len(features))]]=df[features[(i/(len(features)**j))%len(features)]]
+        '''
+                             temp_df[features[i%len(df.keys())]]=df[features[i%len(df.keys())]]
         temp_df[features[(i/len(df.keys()))%len(df.keys())]]=df[features[(i/len(df.keys()))%len(df.keys())]]
         temp_df[features[(i/(len(df.keys())**2))%len(df.keys())]]=df[features[(i/(len(df.keys())**2))%len(df.keys())]]
         temp_df[features[(i/(len(df.keys())**3))%len(df.keys())]]=df[features[(i/(len(df.keys())**3))%len(df.keys())]]
@@ -45,11 +50,14 @@ def feature_selector(df):
         temp_df[features[(i/(len(df.keys())**21))%len(df.keys())]]=df[features[(i/(len(df.keys())**21))%len(df.keys())]]
         temp_df[features[(i/(len(df.keys())**22))%len(df.keys())]]=df[features[(i/(len(df.keys())**22))%len(df.keys())]]
         temp_df[features[(i/(len(df.keys())**23))%len(df.keys())]]=df[features[(i/(len(df.keys())**23))%len(df.keys())]]
+        '''
         print temp_df.keys()
-        while((time.time()-x)<1):
-           None;
+        print Rating_Predictor.predictor(df);
+        
         i+=1;
     
 if __name__=='__main__':
+    import Features_data_creator
+    df=Features_data_creator.get_all_files('E:\Udacity\Machine Learning\MillionSongSubset\data')
     df=pd.read_csv('data.csv',index_col=0)
     feature_selector(df)

@@ -18,14 +18,13 @@ def predictor(df):
         if(pd.isnull(df.loc[i]).any()):
             df=df.drop(i)
     df=df.drop('Artist_Name',axis=1);
-    print df['Song_hotness'].isnull().sum()
     df=df.drop('Song_hotness',axis=1);
     
     df=df.drop('Danceability',axis=1);
     df=df.drop('energy',axis=1);
     #df = df.drop(df['*' in df.Title | '?' in df.Title | '(' in df.Title].index)
     
-    print df.head()
+    #print df.head()
         
     
     df=df.drop('Title',axis=1)
@@ -39,8 +38,8 @@ def predictor(df):
     
     clf.fit(X_train, y_train)
     y_pred=clf.predict(X_test)
-    
-    print "f1 score =",f1_score(y_test, y_pred)
+    return f1_score(y_test, y_pred)
+    #print "f1 score =",
     from sklearn.ensemble import AdaBoostClassifier
     clf1=AdaBoostClassifier(base_estimator=clf)
     clf1.fit(X_train, y_train)
