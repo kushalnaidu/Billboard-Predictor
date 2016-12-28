@@ -7,10 +7,11 @@ Created on Fri Dec 16 11:39:04 2016
 
  
     
-def predictor(df):
+def predictor(X_train, X_test, y_train, y_test):
     import pandas as pd
-    from sklearn.model_selection import train_test_split
+    #from sklearn.model_selection import train_test_split
     from sklearn.metrics import f1_score
+    '''
     df=df[(df.Title.str.find('*')==-1)]
     df=df[(df.Title.str.find('?')==-1)]
     df=df[(df.Title.str.find('(')==-1)]
@@ -32,7 +33,8 @@ def predictor(df):
     
     df=df.drop('Presence',axis=1)
 
-    X_train, X_test, y_train, y_test = train_test_split(df,billboard_presence, test_size=0.25)
+    #X_train, X_test, y_train, y_test = train_test_split(df,billboard_presence, test_size=0.25)
+    '''
     from sklearn.naive_bayes import GaussianNB
     clf = GaussianNB()
     
@@ -40,6 +42,7 @@ def predictor(df):
     y_pred=clf.predict(X_test)
     return f1_score(y_test, y_pred)
     #print "f1 score =",
+    '''
     from sklearn.ensemble import AdaBoostClassifier
     clf1=AdaBoostClassifier(base_estimator=clf)
     clf1.fit(X_train, y_train)
@@ -60,3 +63,4 @@ def predictor(df):
     clf6.fit(X_train, y_train)
     y_pred=clf6.predict(X_test)
     print "f1score=",f1_score(y_test,y_pred)
+    '''

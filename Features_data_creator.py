@@ -155,9 +155,7 @@ def get_all_files(basedir,ext='.h5') :
         df.to_csv("data.csv")
     else:
         df=pd.read_csv('data.csv',index_col=0)
-    return df;
-    import Rating_Predictor
-    Rating_Predictor.predictor(df)
+    return df
 if __name__=='__main__':
     get_all_files('E:\Udacity\Machine Learning\MillionSongSubset\data')
 
