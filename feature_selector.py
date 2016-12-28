@@ -79,10 +79,10 @@ def feature_selector(df):
                             for i7 in range(i6,len(features)):
                                 for i8 in range(i7+1,len(features)):
                                     for i9 in range(i8,len(features)):
-                                        for i10 in range(i9+1,len(features)):
+                                        for i10 in range(i9,len(features)):
                                             for i11 in range(i10+1,len(features)):
-                                                for i12 in range(i11+1,len(features)):
-                                                    for i13 in range(i12+1,len(features)):
+                                                for i12 in range(i11,len(features)):
+                                                    for i13 in range(i12,len(features)):
                                                         for i14 in range(i13,len(features)):
                                                             for i15 in range(i14,len(features)):
                                                                 for i16 in range(i15,len(features)):
@@ -132,7 +132,7 @@ def feature_selector(df):
                                                                             f1=z;
                                                                             arr=X_tr.keys()
                                                                             print "z=",z
-                                        print i
+                                        print i1
                                         print time.time()-x
     
     print "IMPORTANT FEATURES : ", arr
