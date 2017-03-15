@@ -16,6 +16,7 @@ def billboard(songname,artist):#put parameter as song name, artist
     page=urllib2.urlopen('http://www.umdmusic.com/default.asp?Lang=English&Chart=D&ChDay=&ChMonth=&ChYear=&ChBand=&ChSong='+songlink)
     print "came here 2"    
     soup=BeautifulSoup(page);
+    print type(soup)
     all_tables=soup.find_all('table')
     req_table=None
     for req_table in all_tables:
@@ -26,6 +27,7 @@ def billboard(songname,artist):#put parameter as song name, artist
     #print req_table
     name=re.findall(r'<td style="font-size:10pt;font-family:Arial;padding-left:0.1in"><b>'+songname+'(.*?)</td>',str(req_table))
     ranks=re.findall(r'<td align="center" style="font-size:10pt;font-family:Arial">(\d\d|\d)',str(req_table))
+    print name, ranks
     chart_true=0
     for x in name:
         ans=x.strip(' ');

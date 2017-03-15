@@ -70,7 +70,8 @@ for root, dirs, files in os.walk(basedir):
                 peak.append(blbrdpk)
                 weeks.append(blbrdwk)
             except:
-                print "CAME TO EXCEPT"
+                print "Error thrown, Writing to file and ending abruptly. Please rerun the script to continue saving data."
+                print "Error thrown, Writing to file and ending abruptly. Please rerun the script to continue saving data."
                 df=pd.DataFrame();
                 df['Name']=name
                 df['Title']=title

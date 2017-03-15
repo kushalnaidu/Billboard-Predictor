@@ -69,11 +69,9 @@ def get_all_files(basedir,ext='.h5') :
     no_tatums_start=[]#len(hdf5_getters.get_tatums_start(h5))
     avg_tatums_start=[]#np.mean(get_tatums_confidence())
     billboard_presence=[]#returned value from web scraper
-    #MAY NOT BE NECESSARY
-    end_of_fade_in=[]# get_end_of_fade_in
-    key_confidence=[]#get_key_confidence
-    mode_confidence=[]#get_mode_confidence
-    time_signature_confidence=[]#get_time_signature_confidence
+    key=[]
+    duration=[]
+    mode=[]
     target=pd.read_csv('Billboard.csv')
     j=0
     if(not(os.path.isfile('./data.csv'))):
@@ -85,8 +83,6 @@ def get_all_files(basedir,ext='.h5') :
                 artst=hdf5_getters.get_artist_name(h5)
                 for i in range(len(target)):
                     if(target.Title[i]==songnme and target.Name[i]==artst):
-                        #if(not(pd.isnull(target.loc[i]).all())):
-                            
                         billboard_presence.append(target.Presence[i])
                         
                         title.append(songnme)
@@ -95,7 +91,9 @@ def get_all_files(basedir,ext='.h5') :
                         artist_hotness.append(hdf5_getters.get_artist_hotttnesss(h5))
                         song_hotness.append(hdf5_getters. get_song_hotttnesss(h5))
                         danceability.append(hdf5_getters.get_danceability(h5))
-                        
+                        key.append(hdf5_getters.get_key(h5))
+                        duration.append(hdf5_getters.get_duration(h5))
+                        mode.append(hdf5_getters.get_mode(h5))
                         energy.append(hdf5_getters.get_energy(h5))
                         loudness.append(hdf5_getters.get_loudness(h5))
                         tempo.append(hdf5_getters.get_tempo(h5))
@@ -112,19 +110,12 @@ def get_all_files(basedir,ext='.h5') :
                         no_bars.append(len(hdf5_getters.get_bars_start(h5)))
                         avg_bar_confidence.append(np.mean(hdf5_getters.get_bars_confidence(h5)))
                         no_tatums_start.append(len(hdf5_getters.get_tatums_start(h5)))
-                        
                         avg_tatums_start.append(np.mean(hdf5_getters.get_tatums_confidence(h5)))
+                        
                         j+=1
-                        print j
+                        print j #prints the index number of each song, to keep track of the song being saved to the database, and to identify errors.
                         break;
-                        '''
-                        if(j>440):
-                            break;
-                        break;
-                    if(j>440):
-                        break;
-                if(j>440):
-                    break;'''
+                        
                 h5.close()
         print "Created Arrays"             
         df=pd.DataFrame(title,columns=['Title'])
@@ -149,12 +140,18 @@ def get_all_files(basedir,ext='.h5') :
         df['avg_bar_confidence']=avg_bar_confidence
         df['no_tatums_start']=no_tatums_start
         df['avg_tatums_start']=avg_tatums_start
+        df['key']=key
+        df['Mode']=mode
+        df['duration']=duration
         df['Presence']=billboard_presence
         print df.head()
         print billboard_presence
         df.to_csv("data.csv")
     else:
         df=pd.read_csv('data.csv',index_col=0)
+        print "Number of features in the created dataset:",
+        print len(df.keys())
+        print
     return df
 if __name__=='__main__':
     get_all_files('E:\Udacity\Machine Learning\MillionSongSubset\data')

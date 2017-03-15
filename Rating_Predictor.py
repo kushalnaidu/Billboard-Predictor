@@ -8,59 +8,45 @@ Created on Fri Dec 16 11:39:04 2016
  
     
 def predictor(X_train, X_test, y_train, y_test):
-    import pandas as pd
-    #from sklearn.model_selection import train_test_split
-    from sklearn.metrics import f1_score
-    '''
-    df=df[(df.Title.str.find('*')==-1)]
-    df=df[(df.Title.str.find('?')==-1)]
-    df=df[(df.Title.str.find('(')==-1)]
-    for i in df.index:
-        if(pd.isnull(df.loc[i]).any()):
-            df=df.drop(i)
-    df=df.drop('Artist_Name',axis=1);
-    df=df.drop('Song_hotness',axis=1);
-    
-    df=df.drop('Danceability',axis=1);
-    df=df.drop('energy',axis=1);
-    #df = df.drop(df['*' in df.Title | '?' in df.Title | '(' in df.Title].index)
-    
-    #print df.head()
-        
-    
-    df=df.drop('Title',axis=1)
-    billboard_presence=df['Presence']
-    
-    df=df.drop('Presence',axis=1)
-
-    #X_train, X_test, y_train, y_test = train_test_split(df,billboard_presence, test_size=0.25)
-    '''
+    from sklearn import svm
+    from sklearn.model_selection import GridSearchCV
+    from sklearn.metrics import accuracy_score
+    from sklearn.ensemble import AdaBoostClassifier
     from sklearn.naive_bayes import GaussianNB
-    clf = GaussianNB()
     
+    clf1=GaussianNB()
+    
+    abc=AdaBoostClassifier(clf1)
+    
+    parameters={ 'n_estimators':range(10,50),'learning_rate':(0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)}
+    clf = GridSearchCV(abc, parameters)
     clf.fit(X_train, y_train)
     y_pred=clf.predict(X_test)
-    return f1_score(y_test, y_pred)
-    #print "f1 score =",
-    '''
-    from sklearn.ensemble import AdaBoostClassifier
-    clf1=AdaBoostClassifier(base_estimator=clf)
-    clf1.fit(X_train, y_train)
-    y_pred=clf1.predict(X_test)
-    print "f1 score =",f1_score(y_test, y_pred)
-    from sklearn.svm import SVC
-    clf2=SVC()
-    from sklearn.ensemble import BaggingClassifier
-    clf5=BaggingClassifier()
-    from sklearn.neighbors import KNeighborsClassifier
-    clf5=KNeighborsClassifier(n_neighbors=2,weights='distance')
-    clf5.fit(X_train, y_train)
-    y_pred=clf5.predict(X_test)
-    print "f1score=",f1_score(y_test,y_pred)
     
-    from sklearn.ensemble import BaggingClassifier
-    clf6=BaggingClassifier()
-    clf6.fit(X_train, y_train)
-    y_pred=clf6.predict(X_test)
-    print "f1score=",f1_score(y_test,y_pred)
-    '''
+    print "The optimal parameters which yielded the best results are: ",
+    print clf.best_params_
+    z=0
+    z1=0
+    y=[]
+    #Printing the values for getting more insight into the accuracy score:
+    for i in y_test:
+        y.append(i);
+    zz=0 
+    for i in range(len(y)):
+        if(y[i]==1):
+            zz+=1
+        if(y[i]==y_pred[i]):
+            if(y[i]==0):
+                z+=1
+            if(y[i]==1):
+                z1+=1
+    print "Length of the test set:", 
+    print len(y)
+    print "Total number of songs present on the billboard:", 
+    print zz
+    print "Total number of songs present on the billboard, predicted accurately:", 
+    print z1
+    print 
+    print "Accuracy Score = ",
+    print accuracy_score(y_test, y_pred)
+    
