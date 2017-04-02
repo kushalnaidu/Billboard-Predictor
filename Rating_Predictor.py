@@ -18,7 +18,7 @@ def predictor(X_train, X_test, y_train, y_test):
     
     abc=AdaBoostClassifier(clf1)
     
-    parameters={ 'n_estimators':range(10,50),'learning_rate':(0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)}
+    parameters={ 'n_estimators':range(1,20),'learning_rate':(0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1)}
     clf = GridSearchCV(abc, parameters)
     clf.fit(X_train, y_train)
     y_pred=clf.predict(X_test)
@@ -46,7 +46,8 @@ def predictor(X_train, X_test, y_train, y_test):
     print zz
     print "Total number of songs present on the billboard, predicted accurately:", 
     print z1
-    print 
+    print z
     print "Accuracy Score = ",
     print accuracy_score(y_test, y_pred)
+    return y_pred
     
